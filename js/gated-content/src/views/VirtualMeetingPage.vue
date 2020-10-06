@@ -150,8 +150,9 @@ export default {
     },
     isZoomMeetingLink() {
       // Allow regular (zoom.us) or vanity (ymca.zoom.us) URLs.
-      const regex = /https:\/\/([a-zA-Z0-9-]*\.)?zoom\.us/;
-      return this.video && this.meetingLink.uri && regex.test(this.meetingLink.uri);
+      // const regex = /https:\/\/([a-zA-Z0-9-]*\.)?zoom\.us/;
+      // return this.video && this.meetingLink.uri && regex.test(this.meetingLink.uri);
+      return false;
     },
     event() {
       return {
