@@ -24,7 +24,7 @@
             <div
               v-if="description"
               class="video-footer__description"
-                 v-html="description.processed"
+                 v-html="descriptionProcessed"
             ></div>
             <AddToCalendar :event="event"></AddToCalendar>
           </div>
@@ -154,12 +154,15 @@ export default {
       // return this.video && this.meetingLink.uri && regex.test(this.meetingLink.uri);
       return false;
     },
+    descriptionProcessed() {
+      return this.description ? this.description.processed : '';
+    },
     event() {
       return {
         start: this.formatDate(this.video.attributes.date.value),
         duration: [this.getDuration(this.video.attributes.date), 'hour'],
         title: this.video.attributes.title,
-        description: `${this.description.processed}<br>${this.meetingLink.title}: ${this.meetingLink.uri} <br> Virtual meeting page: ${this.pageUrl}`,
+        description: `${this.descriptionProcessed}<br>${this.meetingLink.title}: ${this.meetingLink.uri} <br> Virtual meeting page: ${this.pageUrl}`,
         busy: true,
         guests: [],
       };
