@@ -10,11 +10,11 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Component\Utility\Crypt;
 use Drupal\openy_gc_auth_custom\Plugin\rest\ErrorResponseTrait;
+use Drupal\recaptcha\ReCaptcha\RequestMethod\Drupal8Post;
 use Drupal\rest\ModifiedResourceResponse;
 use Drupal\rest\Plugin\ResourceBase;
 use Psr\Log\LoggerInterface;
 use ReCaptcha\ReCaptcha;
-use ReCaptcha\RequestMethod\Drupal8Post;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
