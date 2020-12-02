@@ -59,7 +59,7 @@ class TryAgainForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $form['#prefix'] = '<h4 class="text-center">' . $this->t('You were not able to login') . '</h4>';
+    $form['#prefix'] = '<h4 class="text-center">' . $this->t('There may be a problem with your account') . '</h4>' . '<div class="alert alert-info text-center">' . $this->configFactory->get('openy_gc_auth.provider.daxko_sso')->get('error_accompanying_message') . '</div>';
 
     $form['#action'] = $this->configFactory->get('openy_gated_content.settings')->get('virtual_y_login_url');
 
@@ -67,8 +67,6 @@ class TryAgainForm extends FormBase {
       '#type' => 'submit',
       '#value' => $this->t('Try Again'),
     ];
-
-    $form['#suffix'] = '<div class="alert alert-info text-center">' . $this->configFactory->get('openy_gc_auth.provider.daxko_sso')->get('error_accompanying_message') . '</div>';
 
     return $form;
   }
