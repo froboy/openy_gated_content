@@ -63,6 +63,14 @@ class GCUserAuthorizer {
         $account = user_load_by_mail($email);
       }
     }
+    else {
+      // Activate user if it's not.
+      if (!$account->isActive()) {
+        $account->activate();
+        $account->setPassword(user_password());
+        $account->save();
+      }
+    }
     // Instantiate GC login user event.
     $event = new GCUserLoginEvent($account);
     // Dispatch the event.
