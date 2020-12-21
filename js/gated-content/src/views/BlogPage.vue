@@ -5,9 +5,11 @@
     </div>
     <div v-else-if="error">Error loading</div>
     <template v-else>
-      <div class="blog-page__image" v-bind:style="{
-              backgroundImage: `url(${image})`
-      }">
+      <div
+        v-if="blog.attributes.field_vy_blog_image !== null"
+        class="blog-page__image"
+        v-bind:style="{backgroundImage: `url(${image})`}"
+      >
       </div>
       <div class="blog-header gated-container">
         <h2>{{ blog.attributes.title }}</h2>
@@ -28,6 +30,11 @@
             }">{{ blog.attributes.field_gc_video_category[index].name }}</router-link>
             <i v-if="index !== blog.attributes.field_gc_video_category.length - 1"> | </i>
           </span>
+          <AddToFavorite
+            :id="blog.attributes.drupal_internal__nid"
+            :type="'node'"
+            :bundle="'vy_blog_post'"
+          ></AddToFavorite>
         </div>
       </div>
       <div class="blog-content gated-container">
@@ -52,6 +59,7 @@
 
 <script>
 import client from '@/client';
+import AddToFavorite from '@/components/AddToFavorite.vue';
 import Spinner from '@/components/Spinner.vue';
 import BlogListing from '@/components/blog/BlogListing.vue';
 import { JsonApiCombineMixin } from '@/mixins/JsonApiCombineMixin';
@@ -61,6 +69,7 @@ export default {
   name: 'BlogPage',
   mixins: [JsonApiCombineMixin, SettingsMixin],
   components: {
+    AddToFavorite,
     BlogListing,
     Spinner,
   },
@@ -121,7 +130,7 @@ export default {
           this.blog = this.combine(response.data.data, response.data.included, this.params);
           this.loading = false;
         }).then(() => {
-          this.$log.trackEventEntityView('node', 'vy_blog_post', this.blog.attributes.drupal_internal__nid);
+          this.$log.trackEvent('entityView', 'node', 'vy_blog_post', this.blog.attributes.drupal_internal__nid);
         })
         .catch((error) => {
           this.error = true;

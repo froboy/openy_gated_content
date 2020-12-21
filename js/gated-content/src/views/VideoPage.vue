@@ -7,7 +7,10 @@
     <template v-else>
       <div class="video-wrapper">
         <div class="video gated-container">
-          <MediaPlayer :media="video.attributes.field_gc_video_media"/>
+          <MediaPlayer
+            :media="video.attributes.field_gc_video_media"
+            @playerEvent="logPlaybackEvent($event)"
+          />
         </div>
       </div>
       <div class="video-footer-wrapper">
@@ -19,6 +22,11 @@
               class="video-footer__description"
                  v-html="video.attributes.field_gc_video_description.processed"
             ></div>
+            <AddToFavorite
+              :id="video.attributes.drupal_internal__nid"
+              :type="'node'"
+              :bundle="'gc_video'"
+            ></AddToFavorite>
           </div>
           <div>
             <div
@@ -85,6 +93,7 @@
 
 <script>
 import client from '@/client';
+import AddToFavorite from '@/components/AddToFavorite.vue';
 import Spinner from '@/components/Spinner.vue';
 import VideoListing from '@/components/video/VideoListing.vue';
 import MediaPlayer from '@/components/MediaPlayer.vue';
@@ -98,6 +107,7 @@ export default {
     MediaPlayer,
     VideoListing,
     Spinner,
+    AddToFavorite,
   },
   props: {
     id: {
@@ -149,7 +159,7 @@ export default {
           this.video = this.combine(response.data.data, response.data.included, this.params);
           this.loading = false;
         }).then(() => {
-          this.$log.trackEventEntityView('node', 'gc_video', this.video.attributes.drupal_internal__nid);
+          this.logPlaybackEvent('entityView');
         })
         .catch((error) => {
           this.error = true;
@@ -157,6 +167,9 @@ export default {
           console.error(error);
           throw error;
         });
+    },
+    logPlaybackEvent(eventType) {
+      this.$log.trackEvent(eventType, 'node', 'gc_video', this.video.attributes.drupal_internal__nid);
     },
   },
 };

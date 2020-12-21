@@ -7,7 +7,10 @@
     <template v-else>
       <div class="video-wrapper">
         <div class="video gated-container">
-          <MediaPlayer :media="media"/>
+          <MediaPlayer
+            :media="media"
+            @playerEvent="logPlaybackEvent($event)"
+          />
         </div>
       </div>
       <div class="video-footer-wrapper">
@@ -19,12 +22,17 @@
               class="video-footer__description mb-3"
               v-html="descriptionProcessed"
             ></div>
+            <AddToFavorite
+              :id="video.attributes.drupal_internal__id"
+              :type="'eventinstance'"
+              :bundle="'live_stream'"
+            ></AddToFavorite>
             <AddToCalendar :event="event" class="mt-3"></AddToCalendar>
           </div>
           <div>
             <div class="video-footer__block">
               <i class="fa fa-clock-o fa-clock" aria-hidden="true"></i>
-              {{ video.attributes.date.value | month }}
+              {{ video.attributes.date.value | month_short }}
               {{ video.attributes.date.value | day }},
               {{ video.attributes.date | schedule }}
             </div>
@@ -70,6 +78,7 @@
 
 <script>
 import client from '@/client';
+import AddToFavorite from '@/components/AddToFavorite.vue';
 import Spinner from '@/components/Spinner.vue';
 import MediaPlayer from '@/components/MediaPlayer.vue';
 import EventListing from '@/components/event/EventListing.vue';
@@ -81,6 +90,7 @@ export default {
   name: 'LiveStreamPage',
   mixins: [JsonApiCombineMixin, EventMixin],
   components: {
+    AddToFavorite,
     MediaPlayer,
     EventListing,
     AddToCalendar,
@@ -125,7 +135,7 @@ export default {
         start: this.formatDate(this.video.attributes.date.value),
         duration: [this.getDuration(this.video.attributes.date), 'hour'],
         title: this.video.attributes.title,
-        description: `${this.descriptionProcessed}<br> Live stream page: ${this.pageUrl}`,
+        description: `Live stream page: ${this.pageUrl}`,
         busy: true,
         guests: [],
       };
@@ -159,7 +169,7 @@ export default {
           }
           this.loading = false;
         }).then(() => {
-          this.$log.trackEventEntityView('series', 'live_stream', this.video.attributes.drupal_internal__id);
+          this.logPlaybackEvent('entityView');
         })
         .catch((error) => {
           this.error = true;
@@ -167,6 +177,9 @@ export default {
           console.error(error);
           throw error;
         });
+    },
+    logPlaybackEvent(eventType) {
+      this.$log.trackEvent(eventType, 'series', 'live_stream', this.video.attributes.drupal_internal__id);
     },
   },
 };
