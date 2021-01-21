@@ -69,7 +69,7 @@ class CategoriesController extends ControllerBase implements ContainerInjectionI
     $query->condition('t.vid', 'gc_category');
     $query->condition('tf.status', 1);
 
-    if (!empty($y_roles) && !in_array(self::getVirtualyEditorRoles(), $y_roles)) {
+    if (!empty($y_roles) && empty(array_intersect($this->getVirtualyEditorRoles(), $y_roles))) {
       $query->leftJoin('node_field_data', 'nd', 'n.entity_id = nd.nid');
       $or_group = $query->orConditionGroup();
       foreach ($y_roles as $role) {
@@ -84,7 +84,7 @@ class CategoriesController extends ControllerBase implements ContainerInjectionI
     $query->distinct(TRUE);
     $result = $query->execute()->fetchCol();
 
-    return new JsonResponse($result);
+    return new JsonResponse(array_values($result));
   }
 
 }
