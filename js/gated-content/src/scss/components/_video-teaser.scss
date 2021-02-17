@@ -1,16 +1,19 @@
 .video-teaser {
-  background-color: $black;
+  background-color: $thunder;
 
   > a {
-    border: none;
+    flex-direction: column;
+    border:         none;
 
     .title {
-      color: $white;
+      align-self:    flex-start;
+      margin-bottom: auto;
+      color:         $white;
 
       @include median(padding, 10px, 5px);
     }
 
-    .instructor {
+    .instructor, .level {
       display:     flex;
       align-items: center;
       align-self:  flex-end;
@@ -30,24 +33,26 @@
     .timer {
       display:          inline-block;
       flex-grow:        0;
-      align-self:       flex-end;
+      align-self:       flex-start;
       margin-top:       11px;
       border:           1px solid $gray;
       border-radius:    12px;
       background-color: $white;
       padding:          5px 10px;
       text-transform:   capitalize;
-      color:            $black;
+      color:            $thunder;
       font-size:        10px;
 
       @include median(margin, 12px 10px, 12px 5px);
     }
 
     .preview {
-      position:        relative;
-      background-size: contain;
-      padding-bottom:  56.25%;
-      width:           100%;
+      position:          relative;
+      align-self:        flex-start;
+      background-repeat: no-repeat;
+      background-size:   contain;
+      padding-bottom:    56.25%;
+      width:             100%;
 
       .play-button {
         position:         absolute;
@@ -83,12 +88,6 @@
           background-color: darken($indigo, 5);
         }
       }
-    }
-  }
-
-  .add-to-favorite {
-    .favorite-icon {
-      fill:  $white;
     }
   }
 }

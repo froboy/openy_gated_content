@@ -1,7 +1,7 @@
 <template>
-  <div class="gated-container">
+  <div class="gated-containerV2 my-40-20 px--20-10">
     <div class="listing-header" :class="{'with-date-filter': withDateFilter}">
-      <h2 class="title">{{ title }}</h2>
+      <h2 class="title text-gray">{{ title }}</h2>
       <h2 class="videos__date-filter"
           v-if="withDateFilter"
       >
@@ -12,16 +12,17 @@
         <button v-on:click.stop="forwardOneDay" class="right"
                 role="button" aria-label="next date"><i class="fa fa-angle-right"></i></button>
       </h2>
-      <router-link :to="{ name: viewAllRoute }" v-if="viewAll" class="view-all">
+      <router-link :to="{ name: 'Schedule' }" v-if="viewAll" class="view-all">
         More
       </router-link>
+      <slot name="filterButton"></slot>
     </div>
     <div v-if="loading" class="text-center">
       <Spinner></Spinner>
     </div>
     <template v-else-if="listingIsNotEmpty">
       <div v-if="error">Error loading</div>
-      <div v-else class="four-columns">
+      <div v-else :class="layoutClass">
         <EventTeaser
           v-for="video in listing"
           :key="video.id"
@@ -39,10 +40,11 @@ import EventTeaser from '@/components/event/EventTeaser.vue';
 import Spinner from '@/components/Spinner.vue';
 import { JsonApiCombineMixin } from '@/mixins/JsonApiCombineMixin';
 import { FavoritesMixin } from '@/mixins/FavoritesMixin';
+import { ListingMixin } from '@/mixins/ListingMixin';
 
 export default {
   name: 'EventListing',
-  mixins: [JsonApiCombineMixin, FavoritesMixin],
+  mixins: [JsonApiCombineMixin, FavoritesMixin, ListingMixin],
   components: {
     EventTeaser,
     Spinner,
@@ -140,16 +142,6 @@ export default {
       };
 
       return isToday(this.date);
-    },
-    viewAllRoute() {
-      switch (this.eventType) {
-        case 'live_stream':
-          return 'LiveStreamListing';
-        case 'virtual_meeting':
-          return 'VirtualMeetingListing';
-        default:
-          return 'LiveStreamListing';
-      }
     },
   },
   methods: {
